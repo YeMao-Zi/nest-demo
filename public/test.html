@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div>hello majun</div>
+
+    <script>
+      async function findOne() {
+        const res = await axios.get('/person/1');
+        console.log(res);
+      }
+      findOne();
+
+      async function find() {
+        const res = await axios.get('/person/find', {
+          params: {
+            name: '张三',
+            age: 18,
+          },
+        });
+        console.log(res);
+      }
+      find()
+    </script>
+  </body>
+</html>
