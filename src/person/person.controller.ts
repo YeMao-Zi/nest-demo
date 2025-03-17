@@ -8,12 +8,15 @@ import {
   Delete,
   Inject,
   Query,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
-@Controller('person')
+@Controller('api/person')
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
@@ -24,12 +27,26 @@ export class PersonController {
     return this.personService.create(createPersonDto);
   }
 
+  @Post('upload')
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      dest: 'uploads/',
+    }),
+  )
+  upload(
+    @Body() createPersonDto: CreatePersonDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    console.log(files, 'files');
+    return `received: ${JSON.stringify(createPersonDto)}`;
+  }
+
   @Get()
   findAll() {
     return this.personService.findAll();
   }
 
-  @Get('find')
+  @Get('query')
   query(@Query('name') name: String, @Query('age') age: Number) {
     return `received： name: ${name}, age: ${age}`;
   }

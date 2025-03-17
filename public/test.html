@@ -1,27 +1,78 @@
 <html>
   <head>
     <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/qs@6.10.2/dist/qs.js"></script>
+    <style></style>
   </head>
   <body>
     <div>hello majun</div>
-
+    <input id="fileInput" type="file" multiple />
     <script>
+      const fileInput = document.querySelector('#fileInput');
+      // ------------------------------
+      // path
+      // ------------------------------
       async function findOne() {
-        const res = await axios.get('/person/1');
-        console.log(res);
+        const res = await axios.get('/api/person/1');
+        console.log(res, 'path');
       }
       findOne();
-
-      async function find() {
-        const res = await axios.get('/person/find', {
+      // query
+      async function query() {
+        const res = await axios.get('/api/person/query', {
           params: {
             name: '张三',
             age: 18,
           },
         });
-        console.log(res);
+        console.log(res, 'query');
       }
-      find()
+      query();
+      // ------------------------------
+      // formUrlEncoded
+      // ------------------------------
+      async function formUrlEncoded() {
+        const res = await axios.post(
+          '/api/person',
+          Qs.stringify({
+            name: '张三',
+            age: 18,
+          }),
+          {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          },
+        );
+        console.log(res, 'formUrlEncoded');
+      }
+      formUrlEncoded();
+      // ------------------------------
+      // json
+      // ------------------------------
+      async function json() {
+        const res = await axios.post('/api/person', {
+          name: '张三',
+          age: 18,
+        });
+        console.log(res, 'json');
+      }
+      json();
+      // ------------------------------
+      // formData
+      // ------------------------------
+      async function upload() {
+        const data = new FormData();
+        data.set('name', '张三');
+        data.set('age', 18);
+        Array.from(fileInput.files).forEach((file, index) => {
+          data.set(`file${index}`, file);
+        });
+
+        const res = await axios.post('/api/person/upload', data, {
+          headers: { 'content-type': 'multipart/form-data' },
+        });
+        console.log(res, 'formData');
+      }
+      fileInput.onchange = upload;
     </script>
   </body>
 </html>
