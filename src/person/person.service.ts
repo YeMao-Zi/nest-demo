@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
+import { AaaService } from '../aaa/aaa.service';
 
 @Injectable()
 export class PersonService {
+  @Inject(AaaService) 
+  private readonly aaaService: AaaService;
   create(createPersonDto: CreatePersonDto) {
     return `This action adds a new person，info:${JSON.stringify(createPersonDto)}`;
   }
 
   findAll() {
-    return `This action returns all person`;
+    return `This action returns all person` + this.aaaService.findAll();
   }
 
   findOne(id: number) {

@@ -20,8 +20,8 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
-  // @Inject(PersonService)
-  // private personService: PersonService;
+  @Inject('testPrivide')
+  private testPrivide: { name: string; age: number };
   @Post()
   create(@Body() createPersonDto: CreatePersonDto) {
     return this.personService.create(createPersonDto);
@@ -37,7 +37,6 @@ export class PersonController {
     @Body() createPersonDto: CreatePersonDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    console.log(files, 'files');
     return `received: ${JSON.stringify(createPersonDto)}`;
   }
 
@@ -53,6 +52,7 @@ export class PersonController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    const testPrivide = this.testPrivide;
     return this.personService.findOne(+id);
   }
 
