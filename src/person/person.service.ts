@@ -5,8 +5,9 @@ import { AaaService } from '../aaa/aaa.service';
 
 @Injectable()
 export class PersonService {
-  @Inject(AaaService) 
+  @Inject(AaaService)
   private readonly aaaService: AaaService;
+
   create(createPersonDto: CreatePersonDto) {
     return `This action adds a new person，info:${JSON.stringify(createPersonDto)}`;
   }

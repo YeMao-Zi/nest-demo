@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
 import { UpdateAaaDto } from './dto/update-aaa.dto';
+import { LoginGuard } from 'src/login.guard';
 
 @Controller('aaa')
 export class AaaController {
@@ -13,6 +23,7 @@ export class AaaController {
   }
 
   @Get()
+  // @UseGuards(LoginGuard) // 添加路由守卫
   findAll() {
     return this.aaaService.findAll();
   }

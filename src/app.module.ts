@@ -12,6 +12,8 @@ import { AppService } from './app.service';
 import { CccModule } from './ccc/ccc.module';
 import { DddModule } from './ddd/ddd.module';
 import { LogMiddleware } from './log.middleware';
+import { LoginGuard } from './login.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -22,7 +24,13 @@ import { LogMiddleware } from './log.middleware';
     DddModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: LoginGuard,
+    // },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

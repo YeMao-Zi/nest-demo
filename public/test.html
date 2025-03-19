@@ -9,6 +9,11 @@
     <input id="fileInput" type="file" multiple />
     <script>
       const fileInput = document.querySelector('#fileInput');
+      async function findAll() {
+        const res = await axios.get('/api/person');
+        console.log(res, 'findAll');
+      }
+      findAll();
       // ------------------------------
       // path
       // ------------------------------
@@ -45,6 +50,7 @@
         console.log(res, 'formUrlEncoded');
       }
       formUrlEncoded();
+
       // ------------------------------
       // json
       // ------------------------------

@@ -10,11 +10,13 @@ import {
   Query,
   UseInterceptors,
   UploadedFiles,
+  UseGuards,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { LoginGuard } from 'src/login.guard';
 
 @Controller('api/person')
 export class PersonController {
@@ -41,6 +43,7 @@ export class PersonController {
   }
 
   @Get()
+  // @UseGuards(LoginGuard) // 添加路由守卫
   findAll() {
     return this.personService.findAll();
   }
