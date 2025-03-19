@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -19,6 +20,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { LoginGuard } from 'src/login.guard';
 import { TimeInterceptor } from 'src/time.interceptor';
 import { ValidatePipe } from 'src/validate.pipe';
+import { TestFilter } from 'src/test.filter';
 
 @Controller('api/person')
 export class PersonController {
@@ -45,7 +47,7 @@ export class PersonController {
   }
 
   @Get()
-  @UseInterceptors(TimeInterceptor)
+  // @UseInterceptors(TimeInterceptor)
   // @UseGuards(LoginGuard) // 添加路由守卫
   findAll() {
     return this.personService.findAll();
@@ -57,6 +59,7 @@ export class PersonController {
   }
 
   @Get(':id')
+  @UseFilters(TestFilter)
   findOne(@Param('id', ValidatePipe) id: string) {
     const testPrivide = this.testPrivide;
     return this.personService.findOne(+id);
