@@ -13,6 +13,7 @@ import {
   UseGuards,
   UseFilters,
   Ip,
+  Headers,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -22,6 +23,7 @@ import { LoginGuard } from 'src/login.guard';
 import { TimeInterceptor } from 'src/time.interceptor';
 import { ValidatePipe } from 'src/validate.pipe';
 import { TestFilter } from 'src/test.filter';
+import { Myheaders } from './person.decorator';
 
 @Controller('api/person')
 export class PersonController {
@@ -50,8 +52,13 @@ export class PersonController {
   @Get()
   // @UseInterceptors(TimeInterceptor)
   // @UseGuards(LoginGuard) // 添加路由守卫
-  findAll(@Ip() ip: string) {
+  findAll(
+    @Ip() ip: string,
+    @Myheaders('Accept') headers1: any,
+    @Headers('Accept') headers2: any,
+  ) {
     console.log('ip: ', ip);
+    console.log(headers1, 'headers', headers2);
     return this.personService.findAll();
   }
 
