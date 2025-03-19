@@ -18,6 +18,7 @@ import { UpdatePersonDto } from './dto/update-person.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { LoginGuard } from 'src/login.guard';
 import { TimeInterceptor } from 'src/time.interceptor';
+import { ValidatePipe } from 'src/validate.pipe';
 
 @Controller('api/person')
 export class PersonController {
@@ -51,12 +52,12 @@ export class PersonController {
   }
 
   @Get('query')
-  query(@Query('name') name: String, @Query('age') age: Number) {
+  query(@Query('name') name: String, @Query('age') age: number) {
     return `received： name: ${name}, age: ${age}`;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ValidatePipe) id: string) {
     const testPrivide = this.testPrivide;
     return this.personService.findOne(+id);
   }
