@@ -17,6 +17,7 @@ import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { LoginGuard } from 'src/login.guard';
+import { TimeInterceptor } from 'src/time.interceptor';
 
 @Controller('api/person')
 export class PersonController {
@@ -43,6 +44,7 @@ export class PersonController {
   }
 
   @Get()
+  @UseInterceptors(TimeInterceptor)
   // @UseGuards(LoginGuard) // 添加路由守卫
   findAll() {
     return this.personService.findAll();
