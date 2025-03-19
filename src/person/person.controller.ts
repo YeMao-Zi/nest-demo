@@ -12,6 +12,7 @@ import {
   UploadedFiles,
   UseGuards,
   UseFilters,
+  Ip,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -49,7 +50,8 @@ export class PersonController {
   @Get()
   // @UseInterceptors(TimeInterceptor)
   // @UseGuards(LoginGuard) // 添加路由守卫
-  findAll() {
+  findAll(@Ip() ip: string) {
+    console.log('ip: ', ip);
     return this.personService.findAll();
   }
 
