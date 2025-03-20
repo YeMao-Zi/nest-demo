@@ -14,6 +14,8 @@ import { DddModule } from './ddd/ddd.module';
 import { LogMiddleware } from './log.middleware';
 import { LoginGuard } from './login.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { AaaService } from './aaa/aaa.service';
+import { DddService } from './ddd/ddd.service';
 
 @Module({
   imports: [

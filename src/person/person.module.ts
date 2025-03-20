@@ -8,7 +8,7 @@ import { AaaService } from 'src/aaa/aaa.service';
   controllers: [PersonController],
   providers: [
     PersonService,
-    AaaService,
+
     {
       provide: 'testPrivide',
       useFactory() {

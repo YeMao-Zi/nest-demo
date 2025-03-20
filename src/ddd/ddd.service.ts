@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateDddDto } from './dto/create-ddd.dto';
 import { UpdateDddDto } from './dto/update-ddd.dto';
+import { AaaService } from 'src/aaa/aaa.service';
 
 @Injectable()
 export class DddService {
+  @Inject(forwardRef(() => AaaService))
+  private readonly aaaService: AaaService;
   create(createDddDto: CreateDddDto) {
     return 'This action adds a new ddd';
   }
 
   findAll() {
-    return `This action returns all ddd`;
+    return `This action returns all ddd` + this.aaaService.findAll();
   }
 
   findOne(id: number) {

@@ -5,15 +5,12 @@ import { AaaService } from '../aaa/aaa.service';
 
 @Injectable()
 export class PersonService {
-  @Inject(AaaService)
-  private readonly aaaService: AaaService;
-
   create(createPersonDto: CreatePersonDto) {
     return `This action adds a new person，info:${JSON.stringify(createPersonDto)}`;
   }
 
   findAll() {
-    return `This action returns all person` + this.aaaService.findAll();
+    return `This action returns all person`;
   }
 
   findOne(id: number) {

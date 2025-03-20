@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { BadRequestException, CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 
@@ -16,6 +16,7 @@ export class AaaGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
+    if(!user) throw new BadRequestException('没有权限');
     return roles.some((role) => user.roles.includes(role));
   }
 }
