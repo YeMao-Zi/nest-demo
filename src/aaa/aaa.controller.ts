@@ -7,11 +7,16 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseFilters,
+  SetMetadata,
 } from '@nestjs/common';
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
 import { UpdateAaaDto } from './dto/update-aaa.dto';
 import { LoginGuard } from 'src/login.guard';
+import { AaaFilter } from './aaa.filter';
+import { AaaExpertion } from './aaa.exceptions';
+import { AaaGuard } from './aaa.guard';
 
 @Controller('aaa')
 export class AaaController {
@@ -23,8 +28,12 @@ export class AaaController {
   }
 
   @Get()
+  // @UseFilters(AaaFilter)
+  @UseGuards(AaaGuard)
+  @SetMetadata('roles', ['admin'])
   // @UseGuards(LoginGuard) // 添加路由守卫
   findAll() {
+    // throw new AaaExpertion('123', '456');
     return this.aaaService.findAll();
   }
 
