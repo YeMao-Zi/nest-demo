@@ -1,6 +1,7 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { BbbService } from './bbb.service';
 import { BbbController } from './bbb.controller';
+import { ConfigurableModuleClass } from './bbb.module-definition';
 
 @Module({})
 export class BbbModule {
@@ -21,3 +22,8 @@ export class BbbModule {
     };
   }
 }
+// @Module({
+//   controllers: [BbbController],
+//   exports: [BbbService, 'bbbOptions'],
+// })
+// export class BbbModule extends ConfigurableModuleClass {}
