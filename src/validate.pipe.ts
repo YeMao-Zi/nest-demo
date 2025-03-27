@@ -5,13 +5,14 @@ import {
   BadRequestException,
   Inject,
   Optional,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
 @Injectable()
 export class ValidatePipe implements PipeTransform {
-  
   @Optional()
   @Inject('testPrivide')
   private testPrivide: { name: string; age: number };
@@ -36,7 +37,14 @@ export class ValidatePipe implements PipeTransform {
     if (Number.isNaN(parseInt(value))) {
       throw new BadRequestException(`参数${metadata.data}错误`);
     }
-
-    return typeof value === 'number' ? value * 10 : parseInt(value) * 10;
+    if (typeof value === 'number') {
+      return value;
+    } else {
+      throw new BadRequestException(`参数${metadata.data}格式错误`);
+      // throw new HttpException(
+      //   `参数${metadata.data}格式错误`,
+      //   HttpStatus.BAD_REQUEST,
+      // );
+    }
   }
 }

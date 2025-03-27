@@ -15,6 +15,7 @@ import {
   Ip,
   Headers,
   ValidationPipe,
+  BadGatewayException,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -23,7 +24,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { LoginGuard } from 'src/login.guard';
 import { TimeInterceptor } from 'src/time.interceptor';
 import { ValidatePipe } from 'src/validate.pipe';
-import { TestFilter } from 'src/test.filter';
+import { TestFilter, ErrorTypeException } from 'src/test.filter';
 import { Myheaders } from './person.decorator';
 import { IsInt } from 'class-validator';
 
@@ -50,8 +51,9 @@ export class PersonController {
       dest: 'uploads/',
     }),
   )
+  @UseFilters(TestFilter)
   upload(
-    @Body(ValidatePipe) createPersonDto: UploadBody,
+    @Body(ValidationPipe) createPersonDto: UploadBody,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     return `received: ${JSON.stringify(createPersonDto)}`;
@@ -67,6 +69,7 @@ export class PersonController {
   ) {
     console.log('ip: ', ip);
     console.log(headers1, 'headers', headers2);
+    throw new ErrorTypeException('错误');
     return this.personService.findAll();
   }
 
@@ -77,7 +80,7 @@ export class PersonController {
 
   @Get(':id')
   @UseFilters(TestFilter)
-  findOne(@Param('id', new ValidatePipe()) id: string) {
+  findOne(@Param('id', ValidatePipe) id: string) {
     const testPrivide = this.testPrivide;
     return this.personService.findOne(+id);
   }

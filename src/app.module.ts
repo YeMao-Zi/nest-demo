@@ -13,9 +13,10 @@ import { CccModule } from './ccc/ccc.module';
 import { DddModule } from './ddd/ddd.module';
 import { LogMiddleware } from './log.middleware';
 import { LoginGuard } from './login.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AaaService } from './aaa/aaa.service';
 import { DddService } from './ddd/ddd.service';
+import { ErrorTypeFilter } from './test.filter';
 
 @Module({
   imports: [
@@ -28,6 +29,11 @@ import { DddService } from './ddd/ddd.service';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      // 注册一个全局的过滤器
+      provide: APP_FILTER,
+      useClass: ErrorTypeFilter,
+    },
     // {
     //   provide: APP_GUARD,
     //   useClass: LoginGuard,

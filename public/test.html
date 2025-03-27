@@ -18,7 +18,7 @@
       // path
       // ------------------------------
       async function findOne() {
-        const res = await axios.get('/api/person/1');
+        const res = await axios.get('/api/person/1w');
         console.log(res, 'path');
       }
       findOne();
@@ -41,7 +41,7 @@
           '/api/person',
           Qs.stringify({
             name: '张三',
-            age: 18.12,
+            age: 18,
           }),
           {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -67,7 +67,7 @@
       // ------------------------------
       async function upload() {
         const data = new FormData();
-        data.set('name', '张三');
+        data.set('name', undefined);
         data.set('age', 18);
         Array.from(fileInput.files).forEach((file, index) => {
           data.set(`file${index}`, file);
