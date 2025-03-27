@@ -14,6 +14,7 @@ import {
   UseFilters,
   Ip,
   Headers,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -24,6 +25,13 @@ import { TimeInterceptor } from 'src/time.interceptor';
 import { ValidatePipe } from 'src/validate.pipe';
 import { TestFilter } from 'src/test.filter';
 import { Myheaders } from './person.decorator';
+import { IsInt } from 'class-validator';
+
+class UploadBody {
+  name: string;
+  @IsInt()
+  age: number;
+}
 
 @Controller('api/person')
 export class PersonController {
@@ -43,7 +51,7 @@ export class PersonController {
     }),
   )
   upload(
-    @Body() createPersonDto: CreatePersonDto,
+    @Body(ValidatePipe) createPersonDto: UploadBody,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     return `received: ${JSON.stringify(createPersonDto)}`;
@@ -69,7 +77,7 @@ export class PersonController {
 
   @Get(':id')
   @UseFilters(TestFilter)
-  findOne(@Param('id', ValidatePipe) id: string) {
+  findOne(@Param('id', new ValidatePipe()) id: string) {
     const testPrivide = this.testPrivide;
     return this.personService.findOne(+id);
   }
