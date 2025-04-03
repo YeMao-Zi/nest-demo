@@ -18,7 +18,7 @@
       // path
       // ------------------------------
       async function findOne() {
-        const res = await axios.get('/api/person/1w');
+        const res = await axios.get('/api/person/11');
         console.log(res, 'path');
       }
       findOne();
@@ -68,7 +68,7 @@
       async function upload() {
         const data = new FormData();
         data.set('name', undefined);
-        data.set('age', 18);
+
         Array.from(fileInput.files).forEach((file, index) => {
           data.set(`file${index}`, file);
         });

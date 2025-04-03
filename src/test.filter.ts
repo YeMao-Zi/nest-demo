@@ -1,24 +1,25 @@
 import {
   ArgumentsHost,
-  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 
 // 自定义一个 ErrorTypeException 异常
 export class ErrorTypeException {
   message: string;
   constructor(message?: string) {
-    console.log('ErrorTypeException', message);
-    message && (this.message = message);
+    if (message) {
+      this.message = message;
+    }
   }
 }
 @Catch(ErrorTypeException)
 export class ErrorTypeFilter implements ExceptionFilter {
   catch(exception: ErrorTypeException, host: ArgumentsHost) {
-    const response = host.switchToHttp().getResponse();
+    const response = host.switchToHttp().getResponse<Response>();
     response.status(HttpStatus.UNAUTHORIZED).json({
       code: HttpStatus.UNAUTHORIZED,
       message: 'fail',
@@ -31,12 +32,12 @@ export class ErrorTypeFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class TestFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-    const response = host.switchToHttp().getResponse();
-    const res = exception.getResponse() as any;
+    const http = host.switchToHttp();
+    const response = http.getResponse<Response>();
     const statusCode = exception.getStatus();
     response.status(statusCode).json({
       code: statusCode,
-      message: res?.message?.join ? res?.message?.join(',') : exception.message,
+      message: exception.message,
       error: 'Bad Request',
     });
   }

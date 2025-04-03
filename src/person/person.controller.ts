@@ -16,6 +16,9 @@ import {
   Headers,
   ValidationPipe,
   BadGatewayException,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -30,7 +33,6 @@ import { IsInt } from 'class-validator';
 
 class UploadBody {
   name: string;
-  @IsInt()
   age: number;
 }
 
@@ -54,7 +56,18 @@ export class PersonController {
   @UseFilters(TestFilter)
   upload(
     @Body(ValidationPipe) createPersonDto: UploadBody,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000 }),
+          new FileTypeValidator({ fileType: 'image/jpeg' }),
+        ],
+        exceptionFactory: (err) => {
+          throw new BadGatewayException('404:' + err);
+        },
+      }),
+    )
+    files: Array<Express.Multer.File>,
   ) {
     return `received: ${JSON.stringify(createPersonDto)}`;
   }
@@ -74,14 +87,13 @@ export class PersonController {
   }
 
   @Get('query')
-  query(@Query('name') name: String, @Query('age') age: number) {
+  query(@Query('name') name: string, @Query('age') age: number) {
     return `received： name: ${name}, age: ${age}`;
   }
 
   @Get(':id')
-  @UseFilters(TestFilter)
   findOne(@Param('id', ValidatePipe) id: string) {
-    const testPrivide = this.testPrivide;
+    console.log(id, 'findOne');
     return this.personService.findOne(+id);
   }
 

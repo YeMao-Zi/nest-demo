@@ -9,6 +9,9 @@ import {
   UseGuards,
   UseFilters,
   SetMetadata,
+  VERSION_NEUTRAL,
+  Version,
+  Headers,
 } from '@nestjs/common';
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
@@ -18,7 +21,10 @@ import { AaaFilter } from './aaa.filter';
 import { AaaExpertion } from './aaa.exceptions';
 import { AaaGuard } from './aaa.guard';
 
-@Controller('aaa')
+@Controller({
+  path: 'aaa',
+  version: VERSION_NEUTRAL,
+})
 export class AaaController {
   constructor(private readonly aaaService: AaaService) {}
 
@@ -35,6 +41,12 @@ export class AaaController {
   findAll() {
     // throw new AaaExpertion('123', '456');
     return this.aaaService.findAll();
+  }
+
+  @Get(':id')
+  @Version(['1']) // 指定版本号
+  findOneV1(@Param('id') id: string, @Headers() headers: any) {
+    return `id(v${headers.version}):${id}`;
   }
 
   @Get(':id')

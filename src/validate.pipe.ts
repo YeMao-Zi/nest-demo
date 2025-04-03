@@ -18,7 +18,6 @@ export class ValidatePipe implements PipeTransform {
   private testPrivide: { name: string; age: number };
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    console.log(metadata, 'value', value, this.testPrivide);
     const { metatype, type } = metadata;
     if (!metatype) {
       return value;
@@ -27,7 +26,6 @@ export class ValidatePipe implements PipeTransform {
     if (type === 'body') {
       const object = plainToInstance(metatype, value);
       const errors = await validate(object);
-      console.log(object, 'object', errors);
       if (errors.length > 0) {
         throw new BadRequestException('参数验证失败');
       }
@@ -37,8 +35,8 @@ export class ValidatePipe implements PipeTransform {
     if (Number.isNaN(parseInt(value))) {
       throw new BadRequestException(`参数${metadata.data}错误`);
     }
-    if (typeof value === 'number') {
-      return value;
+    if (typeof parseInt(value) === 'number') {
+      return parseInt(value);
     } else {
       throw new BadRequestException(`参数${metadata.data}格式错误`);
       // throw new HttpException(
