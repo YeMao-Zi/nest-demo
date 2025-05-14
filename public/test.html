@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +8,62 @@
     <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
   </head>
   <body>
-    <div>测试页面</div>
+    <input id="fileInput" type="file" />
+    <input id="fileInputOss" type="file" />
+    <script>
+      const fileInput = document.querySelector('#fileInput');
+      const chunkSize = 20 * 1024;
+      fileInput.onchange = async function () {
+        const file = fileInput.files[0];
+        let startPos = 0;
+        const chunks = [];
+        while (startPos < file.size) {
+          chunks.push(file.slice(startPos, startPos + chunkSize));
+          startPos += chunkSize;
+        }
+        const timetamp = Date.now();
+        const tasks = [];
+        chunks.forEach(async (chunk, index) => {
+          const formData = new FormData();
+          formData.set('name', timetamp + '_' + file.name + '-' + index);
+          formData.append('files', chunk);
+          tasks.push(axios.post('http://localhost:3000/upload', formData));
+        });
+        await Promise.all(tasks);
+        axios.post('http://localhost:3000/merge', {
+          name: timetamp + '_' + file.name,
+        });
+      };
+
+      const fileInputOss = document.querySelector('#fileInputOss');
+      async function getOSSInfo() {
+        await '请求应用服务器拿到临时凭证';
+        return {
+          OSSAccessKeyId: 'LTAI5tDemEBPwQkTx65jZCdy',
+          Signature: 'NfXgq/qLIR2/v87j/XC9sjrASOA=',
+          policy:
+            'eyJleHBpcmF0aW9uIjoiMjAyNC0wMS0yMFQwMzoyNjowOC4xMDZaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+          host: 'http://guang-333.oss-cn-beijing.aliyuncs.com',
+        };
+      }
+      fileInputOss.onchange = async () => {
+        const file = fileInputOss.files[0];
+        const ossInfo = await getOSSInfo();
+        const formdata = new FormData();
+        formdata.append('key', file.name);
+        formdata.append('OSSAccessKeyId', ossInfo.OSSAccessKeyId);
+        formdata.append('policy', ossInfo.policy);
+        formdata.append('signature', ossInfo.Signature);
+        formdata.append('success_action_status', '200');
+        formdata.append('file', file);
+        const res = await axios.post(ossInfo.host, formdata);
+        if (res.status === 200) {
+          const img = document.createElement('img');
+          img.src = ossInfo.host + '/' + file.name;
+          document.body.append(img);
+          alert('上传成功');
+        }
+      };
+    </script>
   </body>
 </html>
