@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { MyLogger } from './MyLogger';
+// import { MyLogger } from './MyLogger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -10,7 +10,8 @@ async function bootstrap() {
   app.useStaticAssets('public', { prefix: '/static' });
   // 把 uploads 目录设置为静态文件目录（用于上传）
   app.useStaticAssets(join(__dirname, '../uploads'), { prefix: '/uploads' });
-  app.useLogger(app.get(MyLogger));
+  // 替换全局loggger
+  // app.useLogger(app.get(MyLogger));
   await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();

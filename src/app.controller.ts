@@ -18,7 +18,6 @@ export class AppController {
     this.logger.debug('aaa', AppController.name);
     this.logger.error('bbb', AppController.name);
     this.logger.log('ccc', AppController.name);
-    this.logger.verbose('ddd', AppController.name);
     this.logger.warn('eee', AppController.name);
     this.logger.testLog();
     return this.appService.getHello() + this.aaaService.findAll();
