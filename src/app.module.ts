@@ -6,6 +6,8 @@ import { AaaModule } from './aaa/aaa.module';
 import { AppService } from './app.service';
 import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
+import { CityModule } from './city/city.module';
+import { City } from './city/entities/city.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { UserModule } from './user/user.module';
       username: 'root',
       password: '123456',
       database: 'study',
-      entities: [User],
+      entities: [User, City],
       synchronize: true,
       logging: true,
       migrations: [],
@@ -28,6 +30,7 @@ import { UserModule } from './user/user.module';
         authPlugin: 'sha256_password',
       },
     }),
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
