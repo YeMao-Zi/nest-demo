@@ -4,15 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AaaModule } from './aaa/aaa.module';
 import { AppService } from './app.service';
-import { User } from './user/entities/user.entity';
-import { UserModule } from './user/user.module';
-import { CityModule } from './city/city.module';
-import { City } from './city/entities/city.entity';
+import { Article } from './article/entities/article.entity';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
     AaaModule,
-    UserModule,
+    ArticleModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -20,17 +18,17 @@ import { City } from './city/entities/city.entity';
       username: 'root',
       password: '123456',
       database: 'study',
-      entities: [User, City],
-      synchronize: true,
+      entities: [Article],
+      synchronize: false,
       logging: true,
-      migrations: [],
+      migrations: ['./src/migration/**.ts'],
+      migrationsTableName: 'typeorm_migrations',
       subscribers: [],
       connectorPackage: 'mysql2',
-      extra: {
-        authPlugin: 'sha256_password',
-      },
+      // extra: {
+      //   authPlugin: 'sha256_password',
+      // },
     }),
-    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
