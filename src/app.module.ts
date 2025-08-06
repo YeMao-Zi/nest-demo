@@ -1,4 +1,4 @@
-import { Module, NestModule } from '@nestjs/common';
+import { Global, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 
 import { AaaModule } from './aaa/aaa.module';
@@ -6,6 +6,7 @@ import { AaaModule } from './aaa/aaa.module';
 import { AppService } from './app.service';
 import { createClient } from 'redis';
 
+@Global()
 @Module({
   imports: [AaaModule],
   controllers: [AppController],
@@ -19,12 +20,14 @@ import { createClient } from 'redis';
             host: 'localhost',
             port: 6379,
           },
+          // database: 2
         });
         await client.connect();
         return client;
       },
     },
   ],
+  exports: ['REDIS_CLIENT'],
 })
 export class AppModule implements NestModule {
   configure() {}

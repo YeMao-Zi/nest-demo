@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
 import { UpdateAaaDto } from './dto/update-aaa.dto';
+import { MyCacheInterceptor } from 'src/my-cache.interceptor';
 
 @Controller('aaa')
 export class AaaController {
@@ -21,7 +23,9 @@ export class AaaController {
   }
 
   @Get()
+  @UseInterceptors(MyCacheInterceptor)
   findAll() {
+    console.log('aaa-findAll');
     return this.aaaService.findAll();
   }
 
