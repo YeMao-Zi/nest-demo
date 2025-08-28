@@ -7,23 +7,29 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Article {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
-    length: 30,
+    length: 50,
+    comment: '用户名',
   })
-  title: string;
+  username: string;
 
   @Column({
-    type: 'text',
+    length: 50,
+    comment: '密码',
   })
-  content: string;
+  password: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    comment: '创建时间',
+  })
   createTime: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    comment: '更新时间',
+  })
   updateTime: Date;
 }

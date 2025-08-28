@@ -1,17 +1,15 @@
 import { Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
-import { AaaModule } from './aaa/aaa.module';
 import { AppService } from './app.service';
-import { Article } from './article/entities/article.entity';
-import { ArticleModule } from './article/article.module';
-
+import { User } from './user/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    AaaModule,
-    ArticleModule,
+    UserModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -21,7 +19,7 @@ import { ArticleModule } from './article/article.module';
         username: configService.get('mysql_server_username'),
         password: configService.get('mysql_server_password'),
         database: configService.get('mysql_server_database'),
-        entities: [Article],
+        entities: [User],
         synchronize: false,
         logging: true,
         migrations: ['./src/migration/**.ts'],
@@ -33,6 +31,11 @@ import { ArticleModule } from './article/article.module';
         // },
       }),
       inject: [ConfigService],
+    }),
+    JwtModule.register({
+      global: true,
+      secret: '123456',
+      signOptions: { expiresIn: '7d' },
     }),
   ],
   controllers: [AppController],
