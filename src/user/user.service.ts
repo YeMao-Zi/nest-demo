@@ -141,4 +141,16 @@ export class UserService {
       relations: ['permissions'],
     });
   }
+
+  async findUserById(id: number) {
+    const user = await this.entityManager.findOne(User, {
+      where: { id },
+      relations: ['roles'],
+    });
+
+    if (!user) {
+      throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
 }
