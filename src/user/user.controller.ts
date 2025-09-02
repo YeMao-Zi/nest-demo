@@ -51,7 +51,7 @@ export class UserController {
   async login(@Body(ValidationPipe) user: LoginDto) {
     const findUser = await this.userService.login(user);
 
-    const access_token = this.jwtService.sign(
+    const token = this.jwtService.sign(
       {
         user: {
           id: findUser.id,
@@ -60,65 +60,11 @@ export class UserController {
         },
       },
       {
-        expiresIn: '30m',
-      },
-    );
-
-    const refresh_token = this.jwtService.sign(
-      {
-        user: {
-          id: findUser.id,
-        },
-      },
-      {
         expiresIn: '7d',
       },
     );
-    // res.setHeader('Authorization', 'Bearer ' + token);
 
-    return {
-      access_token,
-      refresh_token,
-    };
-  }
-
-  @Get('refresh')
-  async refresh(@Query('refreshToken') refreshToken: string) {
-    try {
-      const info = this.jwtService.verify<JwtPayload>(refreshToken);
-      const findUser = await this.userService.findUserById(info.user.id);
-      const access_token = this.jwtService.sign(
-        {
-          user: {
-            id: findUser.id,
-            username: findUser.username,
-            roles: findUser.roles,
-          },
-        },
-        {
-          expiresIn: '30m',
-        },
-      );
-
-      const refresh_token = this.jwtService.sign(
-        {
-          user: {
-            id: findUser.id,
-          },
-        },
-        {
-          expiresIn: '7d',
-        },
-      );
-
-      return { access_token, refresh_token };
-    } catch (error) {
-      this.logger.error(error);
-      throw new HttpException(
-        'token 已失效，请重新登录',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    return token;
   }
 
   @Post('register')
@@ -128,7 +74,7 @@ export class UserController {
 
   @Get('info')
   @RequireLogin()
-  @RequirePermission(['查询 bbb'])
+  @RequirePermission(['新增 aaa'])
   info() {
     return 'info';
   }

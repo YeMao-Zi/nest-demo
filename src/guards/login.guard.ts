@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { Role } from 'src/user/entities/role.entity';
 
@@ -46,16 +46,33 @@ export class LoginGuard implements CanActivate {
       return true;
     }
     const request: RequestWithUser = context.switchToHttp().getRequest();
+    const response: Response = context.switchToHttp().getResponse();
 
     const authorization = request.headers.authorization || '';
     const [, token] = authorization.split(' ');
-
     if (!token) {
-      throw new HttpException('没有权限', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('身份失效', HttpStatus.UNAUTHORIZED);
     }
     try {
       const info = this.jwtService.verify<JwtPayload>(token);
       request.user = info.user;
+
+      // 检查token是否即将过期（剩余时间少于1小时）
+      const currentTime = Math.floor(Date.now() / 1000);
+      const timeUntilExpiration = info.exp - currentTime;
+
+      // 如果token即将过期（剩余时间少于1小时），生成新的token
+      if (timeUntilExpiration < 3600) {
+        const newToken = this.jwtService.sign(
+          {
+            user: info.user,
+          },
+          {
+            expiresIn: '7d',
+          },
+        );
+        response.setHeader('new-token', newToken);
+      }
       return true;
     } catch (error) {
       this.logger.error(error);

@@ -9,6 +9,9 @@ async function bootstrap() {
   app.useStaticAssets('public', { prefix: '/static' });
   // 把 uploads 目录设置为静态文件目录（用于上传）
   app.useStaticAssets(join(__dirname, '../uploads'), { prefix: '/uploads' });
+  app.enableCors({
+    exposedHeaders: ['token'],
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();
