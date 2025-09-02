@@ -1,5 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { User } from './user/entities/user.entity';
+import { Permission } from './user/entities/permission.entity';
+import { Role } from './user/entities/role.entity';
 import { ConfigService } from '@nestjs/config';
 
 // 使用 ConfigService
@@ -11,7 +13,7 @@ const dataSourceOptions: DataSourceOptions = {
   username: configService.get('mysql_server_username') || 'root',
   password: configService.get('mysql_server_password') || '123456',
   database: configService.get('mysql_server_database') || 'study',
-  entities: [User],
+  entities: [User, Permission, Role],
   migrations: ['src/migrations/**/*{.ts,.js}'],
   synchronize: false,
   logging: true,

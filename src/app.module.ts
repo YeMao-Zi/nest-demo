@@ -5,7 +5,11 @@ import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './user/entities/user.entity';
+import { Permission } from './user/entities/permission.entity';
+import { Role } from './user/entities/role.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { LoginGuard } from './guards/login.guard';
+import { PermissionGuard } from './guards/permission.guard';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -19,16 +23,14 @@ import { JwtModule } from '@nestjs/jwt';
         username: configService.get('mysql_server_username'),
         password: configService.get('mysql_server_password'),
         database: configService.get('mysql_server_database'),
-        entities: [User],
-        synchronize: false,
+        entities: [User, Permission, Role],
+        // synchronize: false,
+        synchronize: true,
         logging: true,
-        migrations: ['./src/migration/**.ts'],
-        migrationsTableName: 'typeorm_migrations',
+        // migrations: ['src/migrations/**/*{.ts,.js}'],
+        // migrationsTableName: 'typeorm_migrations',
         subscribers: [],
         connectorPackage: 'mysql2',
-        // extra: {
-        //   authPlugin: 'sha256_password',
-        // },
       }),
       inject: [ConfigService],
     }),
@@ -39,7 +41,17 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_GUARD',
+      useClass: LoginGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: PermissionGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure() {}

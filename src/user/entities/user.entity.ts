@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from './role.entity';
 
 @Entity()
 export class User {
@@ -32,4 +35,10 @@ export class User {
     comment: '更新时间',
   })
   updateTime: Date;
+
+  @ManyToMany(() => Role)
+  @JoinTable({
+    name: 'user_role_relation',
+  })
+  roles: Role[];
 }
