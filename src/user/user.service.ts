@@ -5,11 +5,7 @@ import { Permission } from './entities/permission.entity';
 import { EntityManager, In, Repository } from 'typeorm';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import * as crypto from 'crypto';
-
-function md5(str: string) {
-  return crypto.createHash('md5').update(str).digest('hex');
-}
+import { md5 } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -96,6 +92,7 @@ export class UserService {
 
   @InjectRepository(User)
   private readonly userRepository: Repository<User>;
+
   async register(user: RegisterDto) {
     const findUser = await this.userRepository.findOne({
       where: { username: user.username },
@@ -107,7 +104,7 @@ export class UserService {
 
     const newUser = new User();
     newUser.username = user.username;
-    newUser.password = user.password.toString();
+    newUser.password = md5(user.password.toString());
 
     try {
       await this.userRepository.save(newUser);
@@ -118,19 +115,11 @@ export class UserService {
     }
   }
 
-  async login(user: RegisterDto) {
+  async findOne(username: string) {
     const findUser = await this.userRepository.findOne({
-      where: { username: user.username },
+      where: { username },
       relations: ['roles'],
     });
-
-    if (!findUser) {
-      throw new HttpException('用户不存在', HttpStatus.UNAUTHORIZED);
-    }
-
-    if (md5(findUser.password) !== md5(user.password.toString())) {
-      throw new HttpException('密码错误', HttpStatus.UNAUTHORIZED);
-    }
 
     return findUser;
   }

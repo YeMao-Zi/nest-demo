@@ -3,35 +3,20 @@ import {
   Get,
   Post,
   Body,
-  // Res,
   ValidationPipe,
-  Query,
-  HttpException,
-  Logger,
-  HttpStatus,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-
-import { LoginDto } from './dto/login.dto';
+import { AuthGuard } from '@nestjs/passport';
 import { RegisterDto } from './dto/register.dto';
 import { JwtService } from '@nestjs/jwt';
-// import { Response } from 'express';
-import {
-  RequireLogin,
-  RequirePermission,
-} from 'src/decorators/custom-decorator';
-import { Role } from './entities/role.entity';
-
-interface User {
-  id: number;
-  userName: string;
-  roles: Role[];
-}
-interface JwtPayload {
-  user: User;
-  iat: number;
-  exp: number;
-}
+// import {
+//   RequireLogin,
+//   RequirePermission,
+// } from 'src/decorators/custom-decorator';
+import { Request } from 'express';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -40,17 +25,15 @@ export class UserController {
     private readonly jwtService: JwtService,
   ) {}
 
-  private logger = new Logger();
-
   @Get('initData')
   async initData() {
     return await this.userService.initData();
   }
 
   @Post('login')
-  async login(@Body(ValidationPipe) user: LoginDto) {
-    const findUser = await this.userService.login(user);
-
+  @UseGuards(AuthGuard('local'))
+  login(@Req() req: Request) {
+    const findUser = req.user! as User;
     const token = this.jwtService.sign(
       {
         user: {
@@ -63,8 +46,7 @@ export class UserController {
         expiresIn: '7d',
       },
     );
-
-    return token;
+    return { token };
   }
 
   @Post('register')
@@ -73,9 +55,10 @@ export class UserController {
   }
 
   @Get('info')
-  @RequireLogin()
-  @RequirePermission(['新增 aaa'])
-  info() {
-    return 'info';
+  // @RequireLogin()
+  // @RequirePermission(['新增 aaa'])
+  @UseGuards(AuthGuard('jwt'))
+  info(@Req() req: Request) {
+    return req.user;
   }
 }

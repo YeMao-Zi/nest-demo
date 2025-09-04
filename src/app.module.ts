@@ -8,8 +8,8 @@ import { User } from './user/entities/user.entity';
 import { Permission } from './user/entities/permission.entity';
 import { Role } from './user/entities/role.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { LoginGuard } from './guards/login.guard';
 import { PermissionGuard } from './guards/permission.guard';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -39,14 +39,11 @@ import { PermissionGuard } from './guards/permission.guard';
       secret: '123456',
       signOptions: { expiresIn: '7d' },
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: 'APP_GUARD',
-      useClass: LoginGuard,
-    },
     {
       provide: 'APP_GUARD',
       useClass: PermissionGuard,
