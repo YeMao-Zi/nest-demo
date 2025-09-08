@@ -49,6 +49,19 @@ export class UserController {
     return { token };
   }
 
+  @Get('githubLogin')
+  @UseGuards(AuthGuard('github'))
+  githubLogin() {
+    // 这里不会被执行，因为会被重定向到 GitHub 的授权页面
+  }
+
+  @Get('githubCallback')
+  @UseGuards(AuthGuard('github'))
+  githubCallback(@Req() req: Request) {
+    const findUser = req.user! as User;
+    return findUser;
+  }
+
   @Post('register')
   async register(@Body(ValidationPipe) user: RegisterDto) {
     return await this.userService.register(user);

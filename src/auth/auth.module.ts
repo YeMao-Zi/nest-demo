@@ -3,10 +3,12 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
+import { GithubStrategy } from './github.strategy';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  imports: [UserModule, ConfigModule],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GithubStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
