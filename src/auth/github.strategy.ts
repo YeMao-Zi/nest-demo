@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(configService: ConfigService) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
       clientID: configService.get<string>('GITHUB_CLIENT_ID')!,
       clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET')!,
