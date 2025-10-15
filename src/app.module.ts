@@ -10,6 +10,9 @@ import { Role } from './user/entities/role.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PermissionGuard } from './guards/permission.guard';
 import { AuthModule } from './auth/auth.module';
+
+import * as crypto from 'crypto';
+(global as any).crypto = crypto;
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -18,11 +21,11 @@ import { AuthModule } from './auth/auth.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('mysql_server_host'),
-        port: configService.get('mysql_server_port'),
-        username: configService.get('mysql_server_username'),
-        password: configService.get('mysql_server_password'),
-        database: configService.get('mysql_server_database'),
+        host: configService.get('MYSQL_SERVER_HOST'),
+        port: configService.get('MYSQL_SERVER_PORT'),
+        username: configService.get('MYSQL_SERVER_USERNAME'),
+        password: configService.get('MYSQL_SERVER_PASSWORD'),
+        database: configService.get('MYSQL_SERVER_DATABASE'),
         entities: [User, Permission, Role],
         // synchronize: false,
         synchronize: true,

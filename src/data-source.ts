@@ -8,11 +8,11 @@ import { ConfigService } from '@nestjs/config';
 const configService = new ConfigService();
 const dataSourceOptions: DataSourceOptions = {
   type: 'mysql',
-  host: configService.get('mysql_server_host') || 'localhost',
-  port: configService.get('mysql_server_port') || 3306,
-  username: configService.get('mysql_server_username') || 'root',
-  password: configService.get('mysql_server_password') || '123456',
-  database: configService.get('mysql_server_database') || 'study',
+  host: configService.get('MYSQL_SERVER_HOST') || 'localhost',
+  port: configService.get('MYSQL_SERVER_PORT') || 3306,
+  username: configService.get('MYSQL_SERVER_USERNAME') || 'root',
+  password: configService.get('MYSQL_SERVER_PASSWORD') || '123456',
+  database: configService.get('MYSQL_SERVER_DATABASE') || 'study',
   entities: [User, Permission, Role],
   migrations: ['src/migrations/**/*{.ts,.js}'],
   synchronize: false,

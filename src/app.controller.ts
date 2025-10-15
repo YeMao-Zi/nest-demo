@@ -11,6 +11,6 @@ export class AppController {
   @Get()
   getHello() {
     // return this.appService.getHello();
-    return this.configService.get<string>('mysql_server_database');
+    return this.configService.get<string>('MYSQL_SERVER_DATABASE');
   }
 }

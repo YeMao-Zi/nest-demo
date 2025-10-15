@@ -35,6 +35,9 @@ RUN pnpm install --prod
 # 从构建阶段复制编译后的文件
 COPY --from=build-stage /app/dist ./dist
 
+# 确保 crypto 模块可用
+RUN apk add --no-cache nodejs
+
 EXPOSE 3000
 
 CMD ["node", "dist/main"]

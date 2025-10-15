@@ -15,7 +15,7 @@ interface Payload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
-    const jwtSecret = process.env.jwt_secret;
+    const jwtSecret = process.env.JWT_SECRET || process.env.jwt_secret;
     if (!jwtSecret) {
       throw new Error('JWT secret is not defined in environment variables');
     }
