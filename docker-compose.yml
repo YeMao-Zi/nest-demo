@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-3000}:${APP_PORT:-3000}"
+    environment:
+      - MYSQL_SERVER_HOST=${MYSQL_SERVER_HOST}
+      - MYSQL_SERVER_PORT=${MYSQL_SERVER_PORT}
+      - MYSQL_SERVER_USERNAME=${MYSQL_SERVER_USERNAME}
+      - MYSQL_SERVER_PASSWORD=${MYSQL_SERVER_PASSWORD}
+      - MYSQL_SERVER_DATABASE=${MYSQL_SERVER_DATABASE}
+      - JWT_SECRET=${JWT_SECRET}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_REDIRECT_URI=${GITHUB_REDIRECT_URI}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_SERVER_DATABASE}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge

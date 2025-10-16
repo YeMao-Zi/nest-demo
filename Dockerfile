@@ -1,28 +1,43 @@
-# 构建阶段
-FROM node:22-bookworm-slim AS builder
+# build-stage
+FROM node:18-alpine AS build-stage
+
+# 安装兼容版本的 pnpm
+RUN npm install -g pnpm@8
 
 WORKDIR /app
 
-COPY package.json .
-RUN npm config set registry https://registry.npmmirror.com/
-RUN npm install
+# 复制 package 文件
+COPY package.json pnpm-lock.yaml ./
 
+# 安装依赖
+RUN pnpm install
+
+# 复制源代码
 COPY . .
-RUN npm run build
 
-# 生产阶段
-FROM node:22-bookworm-slim
+# 构建应用
+RUN pnpm run build
+
+# production stage
+FROM node:18-alpine AS production-stage
+
+# 安装兼容版本的 pnpm
+RUN npm install -g pnpm@8
 
 WORKDIR /app
 
-ENV NODE_ENV=production
+# 复制 package 文件
+COPY package.json pnpm-lock.yaml ./
 
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+# 只安装生产依赖
+RUN pnpm install --prod
 
-RUN npm install pm2 -g
+# 从构建阶段复制编译后的文件
+COPY --from=build-stage /app/dist ./dist
+
+# 确保 crypto 模块可用
+RUN apk add --no-cache nodejs
 
 EXPOSE 3000
 
-CMD ["pm2-runtime", "./dist/main.js"]
+CMD ["node", "dist/main"]
