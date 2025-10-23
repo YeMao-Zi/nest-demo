@@ -5,10 +5,11 @@ import { AaaModule } from './aaa/aaa.module';
 
 import { AppService } from './app.service';
 import { createClient } from 'redis';
+import { RedisModule } from './redis/redis.module';
 
 @Global()
 @Module({
-  imports: [AaaModule],
+  imports: [AaaModule, RedisModule],
   controllers: [AppController],
   providers: [
     AppService,
